@@ -1,0 +1,36 @@
+{
+  "draft_date": "2026-09-11",
+  "note": "User-supplied reference files; hashes for provenance. Original source files are not distributed in this manuscript repository.",
+  "sources": [
+    {
+      "filename": "ZebraSeek_修士論文要旨.pdf",
+      "sha256": "f562c8dd386d96f485c5d6527b18e9a63a661357e6ebf76b49854faada2d3e2a",
+      "bytes": 419311
+    },
+    {
+      "filename": "ZebraSeek_中間発表.pdf",
+      "sha256": "9289317ec59a9e6de7a95daaa78b750ebc10f387c561ddd3da9593e576d87303",
+      "bytes": 1619848
+    },
+    {
+      "filename": "ZebraSeek_authors_affiliations_en.md",
+      "sha256": "01495f8e30846d7d2b4c34daf20abb5633cda706abbc7459f198b06781ec1f6e",
+      "bytes": 1081
+    },
+    {
+      "filename": "image (1).png",
+      "sha256": "89f0b7df9b3d437153680cc29e3c506165954f5fb1873a286744431bec98af08",
+      "bytes": 855593
+    },
+    {
+      "filename": "image (2).png",
+      "sha256": "c71a19134ae75c6f89ff035c12a79290ea799f798048916608150662951e7028",
+      "bytes": 1011398
+    },
+    {
+      "filename": "image (3).png",
+      "sha256": "e28eb2f9c8471a34e6afa8a469adaccdf282ca9de1a14cbd0926ae19807f9a33",
+      "bytes": 504320
+    }
+  ]
+}

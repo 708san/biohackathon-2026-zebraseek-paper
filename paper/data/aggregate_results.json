@@ -1,0 +1,213 @@
+{
+  "status": "Transcribed aggregate results; not case-level data or a new experiment.",
+  "n_cases": 74,
+  "n_diseases": 19,
+  "sources": {
+    "recall": "image (1).png; thesis abstract Fig. 2; presentation slide 14",
+    "success_overlap": "image (2).png; thesis abstract Fig. 3; presentation slide 15",
+    "failure_overlap": "image (3).png; thesis abstract Fig. 4; presentation slide 16",
+    "workflow": "thesis abstract Fig. 1; presentation slides 9-11",
+    "cohort": "presentation slide 12"
+  },
+  "count_provenance": "Recall counts reconstructed from one-decimal percentages with denominator 74. Overlap counts transcribed directly. Verify all against case-level outputs.",
+  "recall": {
+    "PubCaseFinder": {
+      "percent": [
+        63.5,
+        66.2,
+        70.3,
+        70.3,
+        71.6
+      ],
+      "reconstructed_counts": [
+        47,
+        49,
+        52,
+        52,
+        53
+      ]
+    },
+    "SemanticSearch": {
+      "percent": [
+        18.9,
+        24.3,
+        25.7,
+        33.8,
+        33.8
+      ],
+      "reconstructed_counts": [
+        14,
+        18,
+        19,
+        25,
+        25
+      ]
+    },
+    "LLM (GPT-5.2)": {
+      "percent": [
+        18.9,
+        29.7,
+        32.4,
+        32.4,
+        35.1
+      ],
+      "reconstructed_counts": [
+        14,
+        22,
+        24,
+        24,
+        26
+      ]
+    },
+    "GestaltMatcher": {
+      "percent": [
+        31.1,
+        40.5,
+        44.6,
+        48.6,
+        50.0
+      ],
+      "reconstructed_counts": [
+        23,
+        30,
+        33,
+        36,
+        37
+      ]
+    },
+    "ZebraSeek": {
+      "percent": [
+        67.6,
+        71.6,
+        74.3,
+        77.0,
+        79.7
+      ],
+      "reconstructed_counts": [
+        50,
+        53,
+        55,
+        57,
+        59
+      ]
+    }
+  },
+  "component_order": [
+    "PubCaseFinder",
+    "SemanticSearch",
+    "LLM (GPT-5.2)",
+    "GestaltMatcher"
+  ],
+  "success_overlap": [
+    {
+      "components": [
+        "PubCaseFinder",
+        "SemanticSearch",
+        "LLM (GPT-5.2)",
+        "GestaltMatcher"
+      ],
+      "count": 13
+    },
+    {
+      "components": [
+        "PubCaseFinder"
+      ],
+      "count": 10
+    },
+    {
+      "components": [
+        "GestaltMatcher"
+      ],
+      "count": 7
+    },
+    {
+      "components": [
+        "PubCaseFinder",
+        "LLM (GPT-5.2)",
+        "GestaltMatcher"
+      ],
+      "count": 7
+    },
+    {
+      "components": [
+        "PubCaseFinder",
+        "GestaltMatcher"
+      ],
+      "count": 6
+    },
+    {
+      "components": [
+        "PubCaseFinder",
+        "SemanticSearch"
+      ],
+      "count": 5
+    },
+    {
+      "components": [
+        "PubCaseFinder",
+        "LLM (GPT-5.2)"
+      ],
+      "count": 4
+    },
+    {
+      "components": [
+        "SemanticSearch"
+      ],
+      "count": 3
+    },
+    {
+      "components": [
+        "PubCaseFinder",
+        "SemanticSearch",
+        "LLM (GPT-5.2)"
+      ],
+      "count": 2
+    },
+    {
+      "components": [
+        "SemanticSearch",
+        "GestaltMatcher"
+      ],
+      "count": 1
+    },
+    {
+      "components": [
+        "PubCaseFinder",
+        "SemanticSearch",
+        "GestaltMatcher"
+      ],
+      "count": 1
+    }
+  ],
+  "failure_overlap": [
+    {
+      "components": [],
+      "count": 8
+    },
+    {
+      "components": [
+        "PubCaseFinder"
+      ],
+      "count": 5
+    },
+    {
+      "components": [
+        "GestaltMatcher"
+      ],
+      "count": 2
+    }
+  ],
+  "failure_disease_labels_reported": [
+    {
+      "identifier": "OMIM:618164",
+      "source_label": "Cardiac, facial, and digital anomalies",
+      "count": 10
+    },
+    {
+      "identifier": "OMIM:618505",
+      "source_label": "NDD with coarse facies",
+      "count": 5
+    }
+  ],
+  "failure_disease_note": "Labels and identifiers transcribed from slide 16; disease-specific denominators and normalization require confirmation."
+}
