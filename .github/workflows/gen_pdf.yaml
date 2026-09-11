@@ -49,6 +49,17 @@ jobs:
          echo -e "ref: $GITHUB_REF \ncommit: $GITHUB_SHA\nbuild: $(date +"%Y-%m-%dT%H:%M:%SZ")" \
          > info.txt
 
+    - name: Upload PDF build diagnostics on failure
+      if: failure()
+      uses: actions/upload-artifact@v7
+      with:
+        name: pdf-build-diagnostics
+        path: |
+          paper/*.tex
+          paper/*.log
+          paper/*.blg
+        if-no-files-found: ignore
+
     - name: Upload generated PDF as artifact
       uses: actions/upload-artifact@v7
       with:
