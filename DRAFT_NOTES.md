@@ -1,6 +1,6 @@
-# ZebraSeek 初稿メモ
+# ZebraSeek 原稿メモ
 
-作成日：2026-09-11。研究を再実行した原稿ではなく、提供された要旨・発表資料・集計図から作成した英語初稿です。元のPan-Asian論文には変更を加えていません。
+初稿作成日：2026-09-11。論理・関連研究・図の改訂：2026-09-12。研究を再実行した原稿ではなく、提供された要旨・発表資料・集計図から作成した英語初稿です。元のPan-Asian論文には変更を加えていません。
 
 ## 著者と投稿形式
 
@@ -11,7 +11,7 @@
 - AbstractはYAMLの `abstract: |` にあります。独立したConclusion節を設けず、Discussion最終段落に結論を置きました。
 - PDFはBioHackrXivの書式・引用スタイルを保持しています。Nature Geneticsの組版を再現したものではありません。
 - BioHackrXivのevent、会場・開催地・イベントURLは資料から確定できないためTODOです。repo名の2026だけからイベントを推測していません。
-- `date` は初稿作成日です。PDFの標準欄に表示されるSubmitted/Published byは生成器の書式であり、実際の投稿・受理を意味しません。
+- `date` は現在の改訂日です。PDFの標準欄に表示されるSubmitted/Published byは生成器の書式であり、実際の投稿・受理を意味しません。
 
 ## 使用した研究資料
 
@@ -24,7 +24,9 @@
 | `image (2).png` | ZebraSeek成功59例の排他的なツール組合せと件数 |
 | `image (3).png` | ZebraSeek失敗15例の内訳 |
 
-元資料のハッシュは `paper/data/source_provenance.json` に記録しました。元PDFや日本語スライド自体は新repoに複製せず、英語本文と図を作成しています。図1は資料の構成図から作った模式図、図2〜4は集計値の描き直しです。患者写真、スライドの他論文由来の図、ロゴは転載していません。
+追加資料（レビュー、ホワイトボード、アプリ画面）の解釈と研究の位置づけは `SCIENTIFIC_RATIONALE.md` を参照してください。
+
+元資料のハッシュは `paper/data/source_provenance.json` に記録しました。元PDFや日本語スライド自体は新repoに複製せず、英語本文と図を作成しています。改訂後の図1は新しい概念図、図2は初稿の構成図、図3は未入力のアプリ画面、図4〜6は初稿の集計図です。初稿の図ファイル・集計データは維持しています。患者写真、他論文由来の図、入力済み患者画面は転載していません。
 
 ## 数値の確認
 
@@ -57,8 +59,8 @@ Nature Geneticsを目標とする場合の研究拡張事項も含みますが�
 
 ## 引用文献
 
-7件のDOIと書誌情報を一次論文・DOI/Crossref配信で確認しています。GMDB2024はResearch Squareの2024年version 1（preprint）として明記。発表資料が指す版・データリリースは別途確認してください。Mondo論文は2025年online publicationですが、現行の巻号は2026年なのでBibTeXはMondo2026としています。DeepRareとの数値の直接比較はしていません。
+14件の引用を一次論文・出版社/DOI配信・arXivの記録で確認しています。追加した7件の位置づけは `SCIENTIFIC_RATIONALE.md` にまとめています。GMDB2024はResearch Squareの2024年version 1（preprint）として明記。発表資料が指す版・データリリースは別途確認してください。Mondo論文は2025年online publicationですが、現行の巻号は2026年なのでBibTeXはMondo2026としています。DeepRareとの数値の直接比較はしていません。
 
 ## 次回の編集方法
 
-本文・著者・Abstractは `paper/paper.md`、文献は `paper/paper.bib`、図の数値は `paper/data/aggregate_results.json` で編集します。図の数値変更後に `python scripts/make_figures.py` を実行して図を更新します。`main` にpushするとBioHackrXiv PDFを再生成します。生成されたPDFだけを直接編集しないでください。
+本文・著者・Abstractは `paper/paper.md`、文献は `paper/paper.bib`、図の数値は `paper/data/aggregate_results.json` で編集します。今回追加した概念図は `scripts/make_concept_figure.py` で編集・再生成できます。図の数値変更後に `python scripts/make_figures.py` を実行して図を更新します。`main` にpushするとBioHackrXiv PDFを再生成します。生成されたPDFだけを直接編集しないでください。

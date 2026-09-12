@@ -1,6 +1,6 @@
 {
   "draft_date": "2026-09-11",
-  "note": "User-supplied reference files; hashes for provenance. Original source files are not distributed in this manuscript repository.",
+  "note": "User-supplied reference files; hashes for provenance. Source PDFs and discussion photographs are not distributed. The unpopulated ZebraSeek input screenshot is reproduced unchanged as noted below.",
   "sources": [
     {
       "filename": "ZebraSeek_修士論文要旨.pdf",
@@ -31,6 +31,37 @@
       "filename": "image (3).png",
       "sha256": "e28eb2f9c8471a34e6afa8a469adaccdf282ca9de1a14cbd0926ae19807f9a33",
       "bytes": 504320
+    },
+    {
+      "filename": "s41746-026-03109-z_reference (1).pdf",
+      "sha256": "b6242c40f979bd613e8875baf39859d544bb7783f5beb091c36b49563ad56a6a",
+      "bytes": 560878,
+      "use": "Literature context and evaluation limitations; not redistributed"
+    },
+    {
+      "filename": "IMG_3098.jpg",
+      "sha256": "a3161e9f400e3204798365fdc6aa33ce1c01809e0d0b69f343de074f52aae618",
+      "bytes": 1544260,
+      "use": "Whiteboard hypotheses and related-work leads; not redistributed"
+    },
+    {
+      "filename": "スクリーンショット 2026-09-12 10.12.45.png",
+      "sha256": "b20e4d47d1e1f124cc45b8821fe6f6a4fe1fbaee36e1c89a5e11fe3660d91968",
+      "bytes": 195419,
+      "use": "Landing-page access information; not redistributed"
+    },
+    {
+      "filename": "スクリーンショット 2026-09-12 10.11.29.png",
+      "sha256": "e7cb528e9f5d624ab83023fc5a6c940103b85138800f585dc559852cc06d4441",
+      "bytes": 200315,
+      "use": "Reproduced unchanged as paper/figures/zebraseek_input_interface.png"
+    },
+    {
+      "filename": "スクリーンショット 2026-09-12 10.12.03.png",
+      "sha256": "c83b477d252b9011344864705b851cd929c73f06eafa51610306d465ca0ffed8",
+      "bytes": 451418,
+      "use": "Visible results-stage and table descriptions only; not redistributed or scored as a benchmark case"
     }
-  ]
+  ],
+  "revision_date": "2026-09-12"
 }
