@@ -4,7 +4,7 @@
 
 ## 著者と投稿形式
 
-- 筆頭は **Naoya Yoshikuwa**、最終著者は **Toyofumi Fujiwara**。添付の英語著者一覧からFujiwaraのみ末尾へ移し、その他の相対的な順序と所属番号を維持しています。
+- 筆頭は **Naoya Yoshikuwa**、最終著者は **Toyofumi Fujiwara**。著者順はユーザー指定のNaoya、Hirokazu、Teppei、Jae-Moon、Eisuke、Hiroyuki、Atsuko、Tzung-Chien、Orion、Susumu、Toyofumiに更新し、所属番号は維持しています。
 - Yoshikuwaの英語表記は提供された `ZebraSeek_authors_affiliations_en.md` に従いました。全員の氏名・所属の正式表記、所在地・国、ORCID、最終著者順は投稿前に確認してください。
 - Corresponding author、CRediT貢献、助成金、利益相反は未確定です。先頭・末尾の著者という理由で役割を推定していません。
 - Nature Geneticsの[Article案内](https://www.nature.com/ng/content)を2026-09-11に確認：Abstract 150語以内、本文4,000語以内、図表8点以内。見出しなしのIntroduction、Results、Discussion、Online Methodsで構成。

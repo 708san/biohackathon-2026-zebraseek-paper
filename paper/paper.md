@@ -11,12 +11,12 @@ tags:
 authors:
   - name: Naoya Yoshikuwa
     affiliation: 1
+  - name: Hirokazu Chiba
+    affiliation: 3
   - name: Teppei Okazaki
     affiliation: 2
   - name: Jae-Moon Shin
     affiliation: 3
-  - name: Orion Buske
-    affiliation: 4
   - name: Eisuke Dohi
     affiliation: 5
   - name: Hiroyuki Mishima
@@ -25,8 +25,8 @@ authors:
     affiliation: 2
   - name: Tzung-Chien Hsieh
     affiliation: 7
-  - name: Hirokazu Chiba
-    affiliation: 3
+  - name: Orion Buske
+    affiliation: 4
   - name: Susumu Goto
     affiliation: "1,3"
   - name: Toyofumi Fujiwara
@@ -205,7 +205,7 @@ The manuscript source and scripts used to reproduce its aggregate figures are av
 
 # Author contributions
 
-**TODO:** Confirm the contributions of Naoya Yoshikuwa, Teppei Okazaki, Jae-Moon Shin, Orion Buske, Eisuke Dohi, Hiroyuki Mishima, Atsuko Yamaguchi, Tzung-Chien Hsieh, Hirokazu Chiba, Susumu Goto and Toyofumi Fujiwara using an agreed contribution statement. Author order in this working draft places Naoya Yoshikuwa first and Toyofumi Fujiwara last; contribution roles and corresponding authorship have not been inferred from order.
+**TODO:** Confirm the contributions of Naoya Yoshikuwa, Hirokazu Chiba, Teppei Okazaki, Jae-Moon Shin, Eisuke Dohi, Hiroyuki Mishima, Atsuko Yamaguchi, Tzung-Chien Hsieh, Orion Buske, Susumu Goto and Toyofumi Fujiwara using an agreed contribution statement. Author order in this working draft places Naoya Yoshikuwa first and Toyofumi Fujiwara last; contribution roles and corresponding authorship have not been inferred from order.
 
 # Competing interests
 
