@@ -19,6 +19,13 @@ Before editing `paper/paper.md`, read these files in this order:
 - Do not equate mean candidate count with measured compute cost unless tokens, latency, API calls or monetary cost were actually measured.
 - Keep source traceability claims separate from claims about factual correctness or citation fidelity.
 
+## Citation placement
+
+- Place each citation immediately after the specific factual statement or method description that it supports.
+- Do not collect several references at the end of a sentence or paragraph when different clauses describe different studies.
+- When multiple studies are listed, cite each study directly after its own description so the reader can see the claim-to-source correspondence.
+- Repeating the same citation is preferable to leaving the supported claim ambiguous.
+
 ## Scientific positioning
 
 - Begin the Introduction with the rare-disease diagnostic problem and diagnostic odyssey before introducing individual tools.
@@ -66,6 +73,7 @@ Re-read at least Abstract, Introduction, Results headings/bridges, and Discussio
 6. Are original 74-case end-to-end results clearly separated from expanded candidate-coverage analyses?
 7. Do Discussion claims match what Results actually show?
 8. Is any editor-facing prose or unexplained jargon left in the manuscript?
+9. Is every literature-derived factual claim followed immediately by the citation that supports it, without ambiguous citation bundles?
 
 ### 4. Revise and audit again
 
