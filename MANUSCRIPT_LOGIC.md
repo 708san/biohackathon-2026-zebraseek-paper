@@ -2,201 +2,130 @@
 
 最終更新: 2026-09-19
 
-この文書は、ZebraSeekプレプリントの**科学的ストーリー、主張の境界、図表の役割、編集判断を管理する正本**です。GPT、Codex、その他の編集者は `paper/paper.md` を変更する前に必ず本ファイルを確認してください。
-
-`paper/paper.md` には読者向けの原稿だけを置きます。未確定情報、著者への質問、再現性TODOは `EDITORIAL_CHECKLIST.md` で管理します。
+この文書は、ZebraSeekプレプリントの科学的ストーリー、主張の境界、図表の役割、編集判断を管理する正本です。`paper/paper.md` を変更する前に確認し、未確定事項は `EDITORIAL_CHECKLIST.md` に置きます。
 
 ## 1. 一文で言うと何の研究か
 
-ZebraSeekは、希少疾患診断で分散している臨床表現型、顔貌、疾患知識などを、それぞれに適した専門ツールから**疾患候補へ変換し、候補の出所を保ったままLLMで柔軟に統合・検証して、短く確認可能な鑑別リストへまとめる**モジュール型診断支援システムである。
+ZebraSeekは、HPOで表現された臨床所見、顔画像、疾患知識などをそれぞれに適した専門ツールで疾患候補へ変換し、**candidate identity と source provenance を保ったままLLMで統合・検証するモジュール型希少疾患診断支援システム**である。
 
-本プレプリントでは、顔画像を「HPOだけでは十分に表現しにくい表現型情報を追加できる最初の画像モダリティ」と位置づける。元の74症例評価ではこの統合の有用性と候補保持の問題を示し、BioHackathon 2026ではさらに、異なる専門ツールから**どの候補をどこまで後段へ送るか**という効率的な候補探索・選択の問題を検討する。
+本プレプリントでは、顔画像を最終目的ではなく、HPOとは異なる情報を提供する「最初の画像モダリティ」と位置づける。元の74症例評価で相補的候補を統合する価値と候補保持の問題を示し、BioHackathon 2026では、異種の専門ツールから**どの候補を何件後段へ送るか**という効率的なcandidate selectionの問題を定量化する。
 
-## 2. 背景から主張までの論理
+## 2. Introduction の必須ストーリー
 
-ストーリーは必ず次の順にする。
+Introductionは次の順番で読むと自然になるようにする。
 
-1. **希少疾患診断そのものが難しい。** 疾患数が多く、各疾患は稀で、表現型は不完全・年齢依存・非典型でありうる。患者は複数の診療科、検査、誤診を経る長い diagnostic odyssey を経験しうる。
-2. **診断に使える情報は一種類ではない。** HPOで表現された臨床所見、顔貌、既報症例、疾患記述、遺伝情報、将来的には臓器画像などは異なる情報を持つ。
-3. **顔画像にはHPOとは異なる実用的な価値がある。** 顔写真は追加の遺伝検査を必要とせず取得でき、画像解析により顔貌を定量的な表現へ変換できるため、専門家がすべてのdysmorphic featureを主観的に認識してHPOへ手入力することへの依存を下げられる。GestaltMatcherは顔貌空間で患者を照合し、学習時に含まれていない超希少疾患でも同一分子診断例のmatchingを可能にした。PEDIAは、顔画像由来の情報がclinical termsだけでは捉えきれない情報を含むことを示した。
-4. **ただし「画像は客観的だから正しい」とは書かない。** 顔画像解析も撮影品質、年齢、人口集団、学習データ、model coverageの影響を受ける。主張するのは、画像が**人手の記述とは異なる機械可読な表現型情報**を提供しうること、そしてHPO annotationを補完しうることまでである。
-5. **既存研究はマルチモーダル統合の価値をすでに示している。** PhenoScore、GestaltMML、PEDIAなどは顔貌・HPO・臨床情報・遺伝情報の組合せを示し、SHEPHERDはknowledge graphを用いる。したがって「複数モダリティを使うこと」自体をZebraSeekの新規性とはしない。
-6. **既存の統合方法はさまざまである。** 例えばPEDIAは、画像・HPO・variant情報から得た複数の数値scoreをlinear SVMで統合する。これは有効な先行例だが、あらかじめ定義されたnumeric featuresの固定的な統合である。ZebraSeekでは、候補疾患、rank、tool-specific score、negative findings、外部情報などをLLMがcandidate levelで扱うため、異種出力をより文脈依存に統合できる設計を目指す。ただし、この柔軟性自体を「PEDIAより高性能」とは主張しない。LLM挙動への依存という新たな制約も伴う。
-7. **LLM/agentic systemsはさらに広い情報統合と根拠提示を可能にしている。** DeepRareは多数の専門ツール・知識源を組み合わせ、検証可能な医療情報に紐づくreasoning chainを提示する。published formulationではfree text、HPO、VCF/genetic dataを入力とするが、顔画像は入力モダリティに含まれていない。
-8. **したがってZebraSeekの問いは「multimodalか否か」ではない。** 重要なのは、HPO、顔画像、将来的には他の画像など、**性質もscore scaleも異なる専門ツールの出力を、共通のcandidate levelでどう保持し、どこまで後段へ送って、どう統合・検証するか**である。
-9. **この運用上の問題は、既存のmultimodal fusionそのものとは区別して書く。** 「全く研究されていない」と断言しない。代わりに、既存研究の多くは表現の融合や最終予測性能を主眼とし、異種specialist rankingsから何件を後段LLM verificationへ送るかというcandidate-allocation problemは、少なくとも本研究が扱う形では明示的な評価対象になりにくかった、と表現する。
-10. **ZebraSeekの価値は3軸で整理する。**
-    - Effectiveness: 相補的な専門ツールの候補を統合し、単独ツールでは拾いにくい候補も最終鑑別へ残す。
-    - Traceability: candidate ID、source tool、external source、URLを後段まで保持し、候補と根拠の由来を追えるようにする。
-    - Efficiency: LLMによる検索・検証・ランキングに全候補を渡すのではなく、必要な候補だけを後段へ送る設計を目指す。
-11. **元の74症例評価はEffectivenessの根拠である。** ZebraSeekはRecall@1 67.6%、Recall@5 79.7%。PubCaseFinder Top 5にない正解を11例回収した一方、PubCaseFinderが持っていた正解を5例失った。したがって、候補を広げる価値と、統合中に候補を失う問題の両方が存在する。
-12. **顔画像の価値はこの74症例だけから因果的には断定しない。** GestaltMatcher-onlyで正解候補が得られた症例は顔画像の補完性を示唆するが、顔画像を除いたcontrolled ablationがないため、「顔画像のおかげで診断できた」とは書かない。
-13. **現行ZebraSeekには構造的な限界がある。** 各componentからTop 5を取ることはヒューリスティックであり、Top 5より下の疾患は後段のLLMには見えない。一方、Top 30などをすべて渡せば、外部検索、LLM verification、rankingの対象が増える。
-14. **入力モダリティのscoreは直接比較できない。** PubCaseFinderはHPO、GestaltMatcherは顔画像を扱い、scoreの意味・分布・尺度も異なる。現時点で共通に扱える主要な単位は `disease candidate + within-tool rank/score + source information` である。
-15. **LLMの推論能力だけではこの問題を解けない。** LLMは候補統合・検証に有用だが、候補集合に存在しない疾患を選ぶことはできない。また候補数を増やすほど、後段search/verification/rankingの処理量は増える。したがって、LLMに渡す候補集合そのものを設計する必要がある。
-16. **BioHackathon 2026の主眼はここにある。** Top 5でどの程度候補が漏れるのか、より深い順位まで見るとcoverageがどの程度増えるのか、その代わり後段へ渡るcandidate countがどの程度増えるのかを拡張データで調べ、症例ごとに必要な候補だけを選ぶ方向が有用かを検討する。
-17. fixed depth、zero-shot LLM、known diagnosisを使うbest-case retrospective referenceは、**この問題を理解するための最初のbaseline**であり、比較自体が研究目的ではない。
-18. structured outputの強化は別軸のhackathon contributionであり、candidate IDとsource URLを保持してtraceabilityを改善する。
-19. **顔画像は最終地点ではなく最初の画像モダリティである。** Eye2Geneのように、網膜画像から遺伝子候補を生成するspecialist modelも存在する。将来的には、顔貌だけでなく網膜画像など異なる画像モダリティを、それぞれの専門modelからcandidate listへ変換し、ZebraSeekのcandidate-level architectureへ接続できる可能性がある。
-20. **モダリティが増えるほどEfficiencyの問題は重要になる。** すべてのtool outputを無条件にLLMへ渡すのではなく、その患者で有用なmodality/candidateを選択して深掘りすることが、より多面的な診断支援へ拡張する際の研究課題になる。
+1. **希少疾患診断そのものの困難**から始める。疾患が稀で多様、表現型が不完全・年齢依存・非典型であり、diagnostic odysseyが起こる。
+2. **HPO-based prediction の既存基盤**を先に示す。HPOそのものに加えて、Phenomizer、PubCaseFinder、LIRICAL、Exomiserのような代表的ツールを紹介し、structured phenotypeによる候補生成・ランキングが既に重要な診断基盤であることを示す。
+3. **画像はHPOとは異なるphenotype sourceである**と展開する。GestaltMatcherは顔画像、Eye2Geneは網膜画像、Bone2Geneは手X線画像を専門モデルで処理し、画像からcandidateや表現型情報を得る方向性を示す。
+4. 画像の利点は「客観的だから正しい」ではなく、**manual feature recognition / verbalization / HPO encodingへの依存を減らし、定量的・機械可読な補完情報を得られること**と表現する。subtle patternやHPOだけでは十分に表現されない情報を拾える可能性を述べる一方、image quality、age、population representation、training/reference-set coverageの影響を明示する。
+5. **multimodal integration自体は先行研究がある。** PhenoScore、GestaltMML、PEDIA、SHEPHERDを公平に紹介する。
+6. **PEDIAは強い先行例として扱う。** image / phenotype / molecular scoresをlinear SVMで統合する。ZebraSeekとの差は「PEDIAが単純で劣る」ではない。PEDIAのfusion ruleはpredefined numeric featuresに対する固定的な線形統合であり、ZebraSeekはtoolごとに異なるcandidate identity、rank/score、patient context、negative findings、external evidenceなどをcandidate levelで扱える、より拡張可能なintegration interfaceを目指す。これはflexibilityの主張であり、accuracy superiorityの主張ではない。
+7. **LLM/agentic prior workも公平に示す。** DeepRare、RareAgents、MEDDxAgentを紹介する。DeepRareは多数のtool/knowledge sourcesとsource-linked reasoningを持つ強い先行研究であり、ZebraSeekを「初のagentic / traceable system」とはしない。published formulationではfree text、HPO、genetic testing/VCFが入力で、facial photographは入力モダリティに含まれていない。
+8. ここからZebraSeekの問いを定義する。新規性は「multimodalだから」ではなく、**異なるspecialist modelsのranked outputsを共通candidate levelへ写像し、sourceを保持し、どの候補をどこまで後段へ送るかまで設計対象にすること**にある。
+9. current Top 5 heuristicを説明し、候補が浅すぎると正解を後段から見えなくし、深すぎるとsearch / verification / ranking対象が増えるというtrade-offへつなぐ。
+10. BioHackathon 2026はこのtrade-offを調べる。fixed depth、zero-shot LLM、known-diagnosis best-case referenceは問題を理解するためのbaselineであって、baseline比較自体が研究目的ではない。
 
-## 3. 既存研究との位置づけ
+## 3. Citation placement rule
 
-### Facial phenotyping and multimodal phenotype models
+- 文献由来のtool / method / resultは、**そのtool名または対応する具体的記述の直後**にcitationを置く。
+- 複数ツールを1文で並べる場合でも、各toolの直後に対応するcitationを置く。
+- 例: `GestaltMML [citation] ... PEDIA [citation] ... SHEPHERD [citation] ...`
+- `DeepRare [citation]`, `RareAgents [citation]`, `MEDDxAgent [citation]` のように、どのcitationがどのsystemを支えるか曖昧にしない。
+- 異なる研究を説明した後、文末にまとめてcitation bundleを置く書き方は避ける。
 
-GestaltMatcherはportrait imageをClinical Face Phenotype Spaceへ埋め込み、facial phenotype similarityを使ってrare-disease matchingを行う。学習セット外のultra-rare disorderでも同一分子診断例のmatchingを示している。
+## 4. 画像モダリティの位置づけ
 
-PEDIAはDeepGestaltのimage score、HPO-based similarity scores、variant deleteriousnessを含む5種類のscoreをlinear SVMで統合してgene prioritizationを行う。PEDIA自身も、frontal photographの情報がclinical termsを超える情報を持つと報告している。
+### GestaltMatcher / facial phenotyping
 
-PhenoScoreやGestaltMMLも、facial informationとstructured/clinical informationを組み合わせる価値を示している。これらはZebraSeekの新規性を否定する材料ではなく、画像由来のphenotypeが有用な独立情報源であることを示す基盤として扱う。
+- 顔画像は専門家がすべてのdysmorphic featuresを手でHPO化することへの依存を下げうる。
+- GestaltMatcherはfacial phenotype spaceを用いたmatchingを行い、training set外のultra-rare disordersにもgeneralizationを示している。
+- PEDIAはfrontal photographにclinical termsだけでは捉えきれない情報が含まれることを示した。
+- ただし、74-case ZebraSeek結果だけから「顔画像が成功原因」と因果的に断定しない。GestaltMatcher-onlyで正解候補があった症例は補完性を示唆するが、controlled ablationではない。
 
-### Agentic / LLM systems
+### Eye2Gene / Bone2Gene
 
-DeepRareはfree text、HPO、genetic testing results/VCFを入力し、多数の専門ツール・知識源をagenticに統合し、source-linked reasoningを提示する。published architectureの入力にはfacial imageは含まれていない。
+- Eye2Geneはretinal imagingからinherited retinal diseaseのgene-level predictionsを生成する代表例として使う。
+- Bone2Geneはhand radiographsからrare bone diseaseを検出・鑑別するspecialist imaging modelの例として使う。
+- これらは「ZebraSeekに既に実装済み」と書かない。**将来的にcandidate-level interfaceへ接続しうる例**として使う。
+- 顔画像を「multimodal integrationの完成形」ではなく、より多面的な画像統合へ進むstarting pointとして位置づける。
 
-ZebraSeekは、DeepRareより多くのツールを使うことを新規性とはしない。ZebraSeekが焦点を当てるのは、**modality-specific specialist outputsをcandidate levelで保持し、どの候補を後段のLLM integration / evidence retrievalへ送るかを設計対象にすること**である。
+## 5. ZebraSeekの価値
 
-### PEDIAとの違いの表現
+ZebraSeekの価値は次の3軸で一貫して説明する。
 
-PEDIAはpredefined numeric featuresをlinear SVMで統合する。一方ZebraSeekは、candidate rank/score、source tool、patient findings、negative findings、external evidenceなど、異なる構造の情報をLLMが文脈に応じて参照できる。
+- **Effectiveness**: modality-specific specialist toolsが拾う相補的候補を統合する。
+- **Traceability**: candidate ID、source tool、external source、URLを後段まで保持し、候補と根拠の由来を追えるようにする。
+- **Efficiency**: 全candidateをLLM/search/verificationへ流すのではなく、患者ごとに必要なcandidateだけを後段へ送る設計を目指す。
 
-この違いは「ZebraSeekの方が高度／優秀」とは書かない。正確には、**fixed linear score fusionよりも、heterogeneous candidate metadataとexternal evidenceを扱える柔軟なintegration interfaceを持つ**と表現する。その代わりLLM variability、hallucination、candidate loss、costという課題がある。
+モダリティが増えるほど3つ目のEfficiencyが重要になる。face + HPOでのcandidate-depth解析は、将来のretinal / skeletal / other specialist modalities統合に向けた最初のtractable test caseとして説明する。
 
-### Eye2Geneと将来拡張
+## 6. 74-case benchmark の主張
 
-Eye2GeneはFAF、infrared、SD-OCTなどのretinal imagesからinherited retinal diseaseのgene-level predictionsを生成する。画像由来predictionがHPO-only prioritizationを補完しうることを示しており、顔画像以外の画像モダリティがrare-disease prioritizationに寄与しうる具体例としてDiscussionで用いる。
+- 74 cases / 19 diseases。
+- ZebraSeek Recall@1 = 50/74 (67.6%)。
+- ZebraSeek Recall@5 = 59/74 (79.7%)。
+- PubCaseFinder Recall@5 = 53/74 (71.6%)。
+- ZebraSeekはPubCaseFinder top 5外の正解を11例回収した一方、PubCaseFinderが持っていた正解を5例失った。net +6。
+- ZebraSeek failure 15例のうち、8例はどのcomponent top 5にも正解なし、7例は正解候補がcomponentにあったがfinal top 5で失われた。
+- component top-5 unionに正解があるのは66/74 = 89.2%。これはcandidate coverageであり、final top-5 accuracyではない。
 
-ZebraSeekへ直接Eye2Geneを実装済みとは書かない。将来的にgene-level outputをdisease/gene candidate representationへ接続するためのmappingが必要である。
+この結果は「candidate availability」と「candidate retention」を分けて考える必要性を示す。
 
-## 4. 今回のContribution
+## 7. BioHackathon expanded analysis の主張
 
-### Contribution A — candidate-level multimodal integration
+- Phenopacket Store v0.1.27 linked dataset: 368 patients / 462 facial images / 54 disorders。
+- 同一patientの複数imageは異なるage / time pointで、patient-level phenotype annotationは共通。したがってexpanded analysisはimage-instance level。
+- PCF@5 = 0.7338、PCF@10 = 0.7814、PCF@30 = 0.8355。
+- PCF@5 + GM@5 = 0.7749。
+- PCF@30 + GM@30 = 0.8896、mean unique candidates = 57.57。
+- zero-shot LLM depth selection: GPT-5.2 API, reasoning effort medium。
+  - input only: coverage 0.8438, 19.28 candidates, n=461。
+  - input + tool results: coverage 0.8460, 18.18 candidates, n=461。
+  - 1件少ないのは1 imageがAPI content/safety policyでrejectされたため。
+- known-diagnosis retrospective minimum-depth reference: coverage 0.8896, 2.66 candidates, n=462。これは実行可能な診断法ではない。
 
-- HPO、顔画像などを専門ツールで疾患候補へ変換する。
-- 顔画像をLLMへ直接解釈させず、GestaltMatcherというspecialist modelを介して利用する。
-- candidateごとにsource tool、rank/scoreを保持する。
-- LLMで候補を統合し、external medical informationと照合する。
-- raw modalitiesを1つのend-to-end modelへ直接融合するのではなく、specialist outputsを共通のcandidate levelで扱う。
+主張は「Top 30でaccuracy 89%」ではなく、**fixed Top 5がcandidate poolを制限し、深い順位には回収可能な候補がある一方、全候補を渡すとdownstream candidate countが増える**ことである。
 
-### Contribution B — facial image as complementary phenotype evidence
+## 8. Cost / efficiency の境界
 
-- 顔画像はHPO annotationと異なる形でphenotypeを捉える。
-- 自動image analysisにより、専門家が顔貌特徴をすべて言語化・HPO化することへの依存を減らせる。
-- 74-case benchmarkのGestaltMatcher-only successful patternsは補完性を示唆するが、controlled facial ablationではない。
+- candidate countはdownstream workのproxyであり、compute costそのものではない。
+- PCF/GMがTop 30を1回で返す場合、accepted depthを浅くしてもupstream tool call自体は安くならない。
+- 期待される削減対象はexternal retrieval、LLM verification、final ranking等の後段処理。
+- token use、latency、API calls、monetary costを測定するまでは「効率が改善した」と断定しない。
 
-### Contribution C — 74症例での統合性能とfailure decomposition
+## 9. Structured output の主張
 
-- Recall@1: 50/74 (67.6%)。
-- Recall@5: 59/74 (79.7%)。
-- PubCaseFinder Top 5外から11例を回収し、PubCaseFinderが持っていた5例を失った。
-- candidate availabilityとcandidate retentionを分けて考える必要性を示す。
+- candidate decisionsをstable candidate IDで扱う。
+- source tool、source fields、URLを後段まで保持する。
+- free-form outputによるcandidate identity lossやsource detachmentを減らす設計である。
+- URLが存在することはcitation fidelityやmedical correctnessの保証ではない。
 
-### Contribution D — fixed Top 5の限界を拡張データで調べる
+## 10. 主張しないこと
 
-- Phenopacket Store v0.1.27 linked dataset: 368 patients / 462 images / 54 disorders。
-- PCF/GMのdepthを広げるとcandidate coverageが上がる一方、後段へ渡るunique candidatesも増える。
-- Fig. 7の主張は「Top 30で89%」そのものではなく、fixed Top 5がcandidate poolを制約していること。
+- ZebraSeekが初のmultimodal rare-disease diagnosis systemである。
+- ZebraSeekが初のtraceable / agentic diagnostic systemである。
+- DeepRareにtraceabilityがない。
+- image analysisが客観的でbias-freeである。
+- 顔画像が特定症例の成功原因である（ablationなし）。
+- PEDIAがnaive / inferiorである、またはZebraSeekの方がaccuracyで優れる。
+- PEDIAが「disease relationshipを考慮しない」と一般化する。比較はfusion interfaceの違いに限定する。
+- Eye2Gene / Bone2Geneが現在のZebraSeekに統合済みである。
+- Top 30 candidate coverageをZebraSeek final accuracyとして扱う。
+- zero-shot LLM depth selectionが最良である。
+- 2.66 candidatesが実運用で達成可能である。
+- candidate count減少だけでtoken / latency / cost削減を証明したとする。
 
-### Contribution E — efficient candidate explorationの基礎評価
+## 11. Whole-manuscript audit
 
-- fixed-depth conditions、zero-shot LLMによるcase-specific depth selection、known diagnosisを使うbest-case retrospective referenceを比較する。
-- 目的はwinnerを決めることではなく、coverageとcandidate countのtrade-offを確認すること。
-- zero-shot LLMはGPT-5.2 API、reasoning effort medium。
-- zero-shot条件が461 instancesなのは、1件のimageがAPI content-safety policyでrejectされたため。
-- final case-specific selection methodやend-to-end speed-upは今後の検証対象。
+大きな編集では必ず `plan → edit → whole-manuscript audit → revise` を回す。最低限、Abstract、Introduction、Resultsの橋渡し、Discussionを連続して読み、以下を確認する。
 
-### Contribution F — structured outputによるsource traceability改善
-
-- stable candidate IDで候補を扱う。
-- source tool、evidence source、URLをstructured fieldsとして保持する。
-- URL保持はcitation correctnessやmedical validityを自動的に保証しない。
-
-## 5. 現状の限界として明示すること
-
-- fixed Top 5はheuristicである。
-- Top 5外の正解候補は現行pipelineでは後段から見えない。
-- candidate数を増やすと後段のLLM/search workloadが増える可能性があるが、token/latency/costの実測はまだ必要。
-- LLM ranking/verificationに性能が依存する。
-- specialist tools間のscoreは直接比較できる共通尺度ではない。
-- facial image analysisも撮影品質、年齢、demographic representation、reference gallery/model coverageの影響を受けうる。
-- expanded analysisは462 images / 368 patientsで、同一patientの異なる時点の画像が含まれるためpatient-independent evaluationではない。
-- zero-shot条件は461 instancesで、1 imageがAPI content-safety policyでrejectされた。
-- case-specific selectionによるfinal Recall@5改善はまだ示していない。
-- 74-case benchmarkは小規模retrospective evaluationである。
-- leakage/gallery overlap、repeatability、expert evaluation、citation fidelityなど未解決項目がある。
-- Eye2Gene等の追加画像モダリティはfuture directionであり、現行ZebraSeekへ統合して評価した結果ではない。
-
-## 6. 主張しないこと
-
-- 「ZebraSeekが初めてmultimodal rare-disease diagnosisを行った」
-- 「ZebraSeekが初めてtraceable reasoningを実現した」
-- 「既存研究では異なるモダリティの扱いが全く研究されていない」
-- 「顔画像解析は完全に客観的でbiasがない」
-- 「顔画像ならHPOが不要になる」
-- 「DeepRareにはtraceabilityがない」
-- 「DeepRareは画像を絶対に扱えない」— published formulationでfacial imageがinputに含まれていない、と限定する。
-- 「PEDIAよりZebraSeekの方が高性能／高度である」— integration mechanismの柔軟性の違いとして記述する。
-- 「Top 30で89%なのでZebraSeekのaccuracyが89%」
-- 「zero-shot LLMによるdepth selectionが最良」
-- 「known diagnosisを使ったbest-case referenceの2.66 candidatesが実運用で達成できる」
-- 「候補数が減ればtoken/latency/costが必ず減る」と実測なしで断定する。
-- 「今回adaptive selectionを完成した」
-- 「顔貌を使ったことが特定症例の成功原因」とablationなしで因果的に断定する。
-- 「Eye2GeneをZebraSeekに統合済み」と書かない。
-
-## 7. 用語
-
-- **Recall@k**: 最終ranked outputの上位k件に正解が含まれる割合。
-- **Candidate coverage**: 後段へ取り込むcandidate setのどこかに正解が含まれる割合。
-- **Candidate availability**: integration前のcomponent candidate listsに正解が存在すること。
-- **Candidate retention**: integration前に存在した正解候補がfinal shortlistにも残ること。
-- **Candidate-list depth**: 各tool rankingの上位何件までを後段へ取り込むか。
-- **Verification**: 取得済みcandidateをpatient findingsやexternal sourcesと照合する後段処理。
-- **Traceability / source information**: candidateやevidenceがどのtool/source/URLから来たかを追跡できること。
-- **Image-derived phenotype evidence**: raw imageをspecialist modelで解析して得るcandidate/score。画像自体をLLMが直接診断することとは区別する。
-
-`coverage` を end-to-end `Recall@5` と呼ばない。`candidate count` を実測compute costと同義にしない。「objective」という語で画像解析を無批判に優位化しない。
-
-## 8. 図表の役割
-
-- **Fig. 1**: complementary candidate availabilityとretentionの概念。異なるmodalityが異なるcandidateを拾いうることを示す。
-- **Fig. 2**: ZebraSeek workflow。specialist candidate generation → LLM integration → verification → final Top 5。顔画像はGestaltMatcher経由でcandidateへ変換される。
-- **Fig. 3**: interface。clinical input、facial image、component outputs、final candidatesをreviewできることを示す。
-- **Fig. 4**: 74-case benchmarkのobserved Recall@1–5。
-- **Fig. 5**: successful casesにおけるcomponent overlap。補完性を示すが、各modalityのcausal effectではない。
-- **Fig. 6**: 15 failuresのcandidate availability。coverage failureとretention failureを分ける。
-- **Fig. 7**: expanded datasetでretrieval depthを広げたとき、後段に利用可能なcandidate setがどう変わるか。end-to-end performanceではない。
-- **Table 1**: candidate selection baselinesごとのcoverageとmean candidate count。完成アルゴリズムのwinnerを示す表ではない。
-
-## 9. セクションごとの論理
-
-### Abstract
-
-希少疾患診断の難しさ → HPOとfacial imageをspecialist toolsでcandidateへ変換するZebraSeek → 74-case結果 → fixed Top 5とcandidate-selection problem → traceability improvement、の順にする。顔画像はHPOを置き換えるものではなく、画像由来の補完情報と表現する。
-
-### Introduction
-
-rare-disease diagnostic problem → HPOとfacial imageの補完性 → facial imageのpractical/quantitative value → prior multimodal methods → PEDIAのfixed numeric fusionとLLM candidate-level integrationの違い → DeepRareのagentic integrationとpublished input modalities → heterogeneous specialist outputsをどう選択・統合するかというZebraSeekのproblem → current limitation → BioHackathon objective、の順にする。
-
-### Results
-
-既存74-case resultsの数値・図表は変更しない。facial evidenceの価値を説明する際も、Fig. 5のGestaltMatcher-only casesをcontrolled ablationの代わりに使わない。
-
-### Discussion
-
-1. ZebraSeekのcandidate-level modular integrationとfacial phenotypeの意味。
-2. PEDIA等のmultimodal methodsとの違いを「fixed score fusion vs flexible candidate/evidence integration」として説明。
-3. DeepRareを強いagentic/traceable prior workとして認めつつ、published formulationではfacial image inputがないことを述べる。
-4. heterogeneous specialist rankingsのcandidate-selection problemをBioHackathon解析へつなぐ。
-5. facial imageをfirst stepとし、Eye2Gene等のretinal imaging specialist modelsを将来的に接続する方向を述べる。
-6. modalityが増えるほどcase-specific candidate/modality selection、traceability、cost measurementが重要になると結ぶ。
-
-## 10. 編集ガードレール
-
-- 文献由来の事実は、その記述の直後に対応するcitationを置く。
-- 「簡単」「客観的」「未研究」「柔軟」といった語は絶対表現にしない。
-- facial imageの利点は、`easy acquisition / reduced dependence on manual feature encoding / information beyond HPO terms`を中心にする。
-- PEDIAとの比較はarchitectureの違いであり、性能比較ではない。
-- DeepRareの画像非使用は`published input formulation`に限定する。
-- Eye2Geneはfuture directionとして扱い、現行ZebraSeekの結果に混ぜない。
-- 新しいmodalityを増やすこと自体を新規性にせず、**heterogeneous specialist outputsをcandidate levelで選択・統合・追跡する設計**を中心にする。
+1. rare-disease diagnostic problem → HPO tools → specialist imaging → multimodal fusion → LLM/candidate-level integration → ZebraSeek、の順序が自然か。
+2. HPO benchmark candidates（Phenomizer、PubCaseFinder、LIRICAL、Exomiser）がIntroductionで先に紹介されているか。
+3. GestaltMatcher、Eye2Gene、Bone2Geneが「specialist imaging modelsが増えている」という広いストーリーに寄与しているか。
+4. PEDIAを弱く描きすぎず、fixed linear score fusionとZebraSeek candidate-level integrationの違いを正確に書いているか。
+5. DeepRare、RareAgents、MEDDxAgentをfairに位置づけているか。
+6. citationが対応するtool / claimの直後にあるか。
+7. 74-case end-to-end Recallとexpanded candidate coverageを混同していないか。
+8. BioHackathonの目的がbaseline contestではなく、efficient candidate explorationの可能性検討になっているか。
+9. future outlookがfaceだけで終わらず、retinal / skeletal / other modalityへ自然につながっているか。
+10. evidenceを超えたfirst / superior / objective / efficient等の断定がないか。
