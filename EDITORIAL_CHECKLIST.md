@@ -29,23 +29,40 @@
   - `paper/data/adaptive_candidate_depth_summary.csv`
 - [x] expanded retrieval-depth figureをrepoに保存
   - `paper/figures/expanded_candidate_depth_recall.svg`
+- [x] zero-shot条件がn=461になった理由を確認
+  - 462 imagesのうち1画像がAPIのcontent/safety policyにより拒否され、zero-shot LLM条件では評価できなかった。
+- [x] zero-shot candidate-depth selectionのモデル設定を確認
+  - GPT-5.2 API
+  - reasoning effort: `medium`
+  - exact promptは今回のpreprint本文には詳述しない。
+- [x] expanded analysisの複数画像の意味を確認
+  - 368 patientsに対して462 facial images。
+  - 同一患者の複数画像は異なる時点・年齢で撮影された画像である。
+  - patient-levelのphenotype annotationsは同一患者内で共通だが、facial imageと画像時点のageは異なりうる。
 
 ## A. expanded analysis of candidate-list depth
 
 ### A1. zero-shot LLM depth-selection run
 
-- [ ] n=462ではなくn=461になった1 instanceの理由を確認する。
-- [ ] zero-shot LLMの正確なmodel identifier / snapshotを記録する。
-- [ ] exact promptをrepoに保存する。
+- [x] n=462ではなくn=461になった1 instanceの理由を確認する。
+  - 1 image-level instanceがAPI content/safety policyで拒否されたため。
+- [x] zero-shot LLMのmodelを確認する。
+  - GPT-5.2 API, reasoning effort `medium`。
+- [ ] exact promptをrepoに保存するか決める。
+  - 今回のpreprint本文では詳細promptは記載しない方針。
 - [ ] 選択可能なcandidate depthを記録する。例: 0/5/10/20/30など。
-- [ ] temperature、sampling、reasoning setting、retry ruleを記録する。
+- [ ] temperature、sampling、retry ruleを記録する。
+  - reasoning effortは `medium` と確認済み。
 - [ ] parse failure / API failure / timeout時の扱いを記録する。
 - [ ] input-only conditionとinput + tool-results conditionで渡したfieldを列挙する。
 
 ### A2. image-level / patient-level definition
 
-- [ ] 368 patients / 462 imagesについて、同一患者の複数画像ではHPO/sexなどのclinical inputは同一で、GM結果のみ画像単位で異なるという理解が正しいか確認する。
-- [ ] 同一patient内の複数画像の扱いをMethodsに記述できるようにする。
+- [x] 368 patients / 462 imagesにおける複数画像の意味を確認する。
+  - 同一patientの複数画像は異なるtime point / ageの画像。
+  - phenotype annotationsは同一patient内で共通。
+  - facial imageと画像時点のageはimageごとに異なりうる。
+- [x] 同一patient内の複数画像の扱いをMethodsに記述する。
 - [ ] patient-wise aggregationまたはseparate patient-wise test evaluationを追加するか決める。
 - [ ] 54 disordersの一覧とimage/patient denominatorsを保存する。
 
