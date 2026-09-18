@@ -14,26 +14,59 @@ Before editing `paper/paper.md`, read these files in this order:
 - Do not invent missing experimental details. Ask the author or leave the item in the checklist.
 - Preserve the current PDF section order, Figures 1–7 and Table 1 unless the author explicitly approves a structural change.
 - Preserve the original 74-case ZebraSeek story and Figs. 1–6 when incorporating hackathon results.
-- Treat Fig. 7 and Table 1 as analyses of how many candidates are taken from each tool, not end-to-end ZebraSeek performance.
+- Treat Fig. 7 and Table 1 as analyses of candidate-list depth and downstream candidate count, not end-to-end ZebraSeek performance.
 - Keep `Recall@k`, candidate coverage, candidate availability, candidate retention, candidate-list depth and verification distinct as defined in `MANUSCRIPT_LOGIC.md`.
-- Do not claim that top-30 coverage, the mathematical formulation, zero-shot LLM selection or the best-case reference that uses the known diagnosis is itself the main contribution or a completed case-specific selection method.
 - Do not equate mean candidate count with measured compute cost unless tokens, latency, API calls or monetary cost were actually measured.
 - Keep source traceability claims separate from claims about factual correctness or citation fidelity.
+
+## Scientific positioning
+
+- Begin the Introduction with the rare-disease diagnostic problem and diagnostic odyssey before introducing individual tools.
+- Present prior multimodal work as evidence that combining modalities is valuable, not as evidence that ZebraSeek lacks novelty.
+- Do not claim that multimodal rare-disease diagnosis or traceable reasoning is unique to ZebraSeek. DeepRare explicitly provides evidence-grounded, traceable reasoning.
+- Position ZebraSeek around candidate-level modular integration: specialist tools produce disease candidates; their source identity is retained; LLM-based ranking and external-information verification operate on those candidates.
+- The manuscript should communicate three design goals: **effectiveness**, **traceability**, and **efficiency**.
+- Describe the current limitations clearly: heuristic top-five candidate input, inability to recover unseen candidates, non-comparable specialist scores, and downstream dependence on LLM reasoning/search cost.
+- BioHackathon 2026 work is motivated by efficient candidate exploration and selection. Fixed-depth, zero-shot LLM and best-case retrospective conditions are baselines used to study that problem, not the objective by themselves.
 
 ## Plain-language rule
 
 - Prefer wording that states what the method actually does over machine-learning jargon or manuscript-specific shorthand.
 - Avoid terms such as `oracle`, `headroom`, `candidate burden`, `gating`, or `policy` when a clearer phrase is available.
-- For example, write `best-case retrospective reference using the known diagnosis` instead of `oracle`, `potential reduction in candidate count` instead of `headroom`, and `number of candidates passed to later stages` instead of `candidate burden`.
 - When a technical term is necessary, define it at first use in reader-facing language.
 - Do not introduce a new abbreviation unless it is used repeatedly and improves readability.
 
-## Updating the scientific story
+## Required editing loop
 
-If a new result materially changes the interpretation:
+Substantial manuscript revisions must use an iterative **plan → edit → whole-manuscript audit → revise** loop. Do not stop after a local paragraph edit.
 
-1. Update `MANUSCRIPT_LOGIC.md` first.
-2. Update the relevant evidence/task status in `EDITORIAL_CHECKLIST.md`.
-3. Then revise `paper/paper.md`.
+### 1. Plan
 
-Do not silently change the manuscript's central claim to fit a newly added experiment.
+Before writing, state internally:
+- what scientific misunderstanding or narrative problem is being fixed;
+- which sections need revision;
+- which figures/results/claims must remain unchanged;
+- which new factual claims require source verification.
+
+If the scientific interpretation changes, update `MANUSCRIPT_LOGIC.md` before `paper/paper.md`.
+
+### 2. Edit
+
+Revise reader-facing prose. Move unresolved facts to `EDITORIAL_CHECKLIST.md` rather than inserting TODOs into the manuscript.
+
+### 3. Whole-manuscript audit
+
+Re-read at least Abstract, Introduction, Results headings/bridges, and Discussion as one argument. Check:
+
+1. Does the rare-disease diagnostic problem naturally motivate ZebraSeek?
+2. Is ZebraSeek's value clear as effectiveness + traceability + efficiency?
+3. Is prior work represented fairly, without false `first` or `no previous work` claims?
+4. Is the current architecture and its limitation understandable before the BioHackathon extension is introduced?
+5. Does the BioHackathon section read as an investigation of efficient candidate exploration, rather than a contest among baselines?
+6. Are original 74-case end-to-end results clearly separated from expanded candidate-coverage analyses?
+7. Do Discussion claims match what Results actually show?
+8. Is any editor-facing prose or unexplained jargon left in the manuscript?
+
+### 4. Revise and audit again
+
+Fix the problems found in step 3 and repeat the whole-manuscript audit at least once. Preserve the current PDF structure unless the author approves a structural change.
