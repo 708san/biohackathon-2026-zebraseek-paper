@@ -11,6 +11,7 @@
 - 未解決事項はこのチェックリストに残す。
 - 解決した項目は、根拠となるcommit、file、URL、著者回答などを併記して完了扱いにする。
 - 新しい実験結果が論文の主張を変える場合は、先に `MANUSCRIPT_LOGIC.md` を更新する。
+- 一般的でない機械学習用語はできるだけ避け、何をしているかを具体的な言葉で書く。
 
 ## 解決済み
 
@@ -23,21 +24,21 @@
   - `https://github.com/708san/AI_AgentWithLangGraph`
 - [x] Table 1のunion記号がPDFで崩れる問題を修正
   - table labelは `PCF@5 + GM@5` のように表記
-  - captionで `+` = deduplicated union と定義
+  - captionで `+` = duplicate diseasesを除いたcombined candidate listsと定義
 - [x] expanded analysisのaggregate summaryをrepoに保存
   - `paper/data/adaptive_candidate_depth_summary.csv`
 - [x] expanded retrieval-depth figureをrepoに保存
   - `paper/figures/expanded_candidate_depth_recall.svg`
 
-## A. expanded candidate-acquisition analysis
+## A. expanded analysis of candidate-list depth
 
-### A1. zero-shot depth-selection run
+### A1. zero-shot LLM depth-selection run
 
 - [ ] n=462ではなくn=461になった1 instanceの理由を確認する。
 - [ ] zero-shot LLMの正確なmodel identifier / snapshotを記録する。
 - [ ] exact promptをrepoに保存する。
-- [ ] depth action spaceを記録する。例: 0/5/10/20/30など。
-- [ ] temperature、sampling、reasoning setting、retry policyを記録する。
+- [ ] 選択可能なcandidate depthを記録する。例: 0/5/10/20/30など。
+- [ ] temperature、sampling、reasoning setting、retry ruleを記録する。
 - [ ] parse failure / API failure / timeout時の扱いを記録する。
 - [ ] input-only conditionとinput + tool-results conditionで渡したfieldを列挙する。
 
@@ -45,16 +46,16 @@
 
 - [ ] 368 patients / 462 imagesについて、同一患者の複数画像ではHPO/sexなどのclinical inputは同一で、GM結果のみ画像単位で異なるという理解が正しいか確認する。
 - [ ] 同一patient内の複数画像の扱いをMethodsに記述できるようにする。
-- [ ] patient-wise aggregationまたはheld-out patient-wise evaluationを追加するか決める。
+- [ ] patient-wise aggregationまたはseparate patient-wise test evaluationを追加するか決める。
 - [ ] 54 disordersの一覧とimage/patient denominatorsを保存する。
 
 ### A3. candidate-set construction
 
 - [ ] exact OMIM matchingのnormalization ruleを保存する。
-- [ ] PCFとGMのduplicate diseaseをどのIDレベルでdeduplicateしたか記録する。
+- [ ] PCFとGMのduplicate diseaseをどのIDレベルで除いたか記録する。
 - [ ] tieがある場合のrank cutoff処理を記録する。
 - [ ] toolが30候補未満しか返さない場合の扱いを確認する。
-- [ ] oracle minimum-depthのexact algorithmをevaluation scriptとして保存する。
+- [ ] 既知の正解診断を使って最小candidate depthを求めるbest-case retrospective referenceのexact algorithmをevaluation scriptとして保存する。
 
 ## B. original 74-case benchmark
 
@@ -96,13 +97,13 @@
 ### C2. prompts and orchestration
 
 - [ ] original 74-case runで使用した全promptをarchiveする。
-- [ ] candidate normalization / deduplication ruleを記録する。
+- [ ] candidate normalization / duplicate-removal ruleを記録する。
 - [ ] verification stageがnew candidateを追加できるか確認する。
 - [ ] verification対象候補数とstopping ruleを記録する。
 - [ ] PubMed / external search query constructionとretrieval dateを記録する。
 - [ ] text truncation、error handling、retryのruleを記録する。
 
-### C3. structured output / provenance
+### C3. structured output / source tracking
 
 - [ ] current structured-output schemaを保存する。
 - [ ] stable candidate IDのfieldとvalidation ruleを記録する。
@@ -111,19 +112,19 @@
 - [ ] out-of-list candidate generationを防ぐcandidate-ID-based structured outputの評価値を、本文へ追加するか著者間で決める。
 - [ ] URL existence / citation fidelity / claim supportの評価方法を決める。
 
-## D. candidate-acquisition: 次の実験
+## D. 各ツールから何件の候補を取るか：次の実験
 
 - [ ] fixed-depth combinationsを系統的に比較する。
-- [ ] simple heuristicを比較する。
+- [ ] simple rulesを比較する。
   - within-tool rank
   - score magnitude / score drop
   - rank/score shape
-- [ ] feature-based gatingを比較する。
-- [ ] pairwise methodを比較するか決める。
-- [ ] sequential stop/continue policyを比較する。
+- [ ] patient informationやtool resultsの特徴を使うfeature-based selectionを比較する。
+- [ ] 2つのselection案を直接比較するpairwise methodを使うか決める。
+- [ ] 候補をさらに取るか止めるかを順番に判断する方法を比較する。
 - [ ] patient-wise development/test splitを固定する。
-- [ ] policy selectionはdevelopment setのみで行い、test setを最終評価まで触らない。
-- [ ] full ZebraSeek pipelineにcandidate acquisition policyを接続する。
+- [ ] selection strategyの選択はdevelopment setのみで行い、test setを最終評価まで触らない。
+- [ ] case-specific candidate selectionをfull ZebraSeek pipelineに接続する。
 - [ ] end-to-end Recall@1/5、candidate retentionを比較する。
 - [ ] input/output tokens、wall-clock latency、API calls、monetary costを実測する。
 
