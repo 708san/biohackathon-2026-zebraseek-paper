@@ -12,39 +12,39 @@ authors:
   - name: Naoya Yoshikuwa
     affiliation: 1
   - name: Hirokazu Chiba
-    affiliation: 3
+    affiliation: 2
   - name: Teppei Okazaki
-    affiliation: 2
+    affiliation: 3
   - name: Jae-Moon Shin
-    affiliation: 3
-  - name: Eisuke Dohi
-    affiliation: 5
-  - name: Hiroyuki Mishima
-    affiliation: 6
-  - name: Atsuko Yamaguchi
     affiliation: 2
-  - name: Tzung-Chien Hsieh
-    affiliation: 7
-  - name: Orion Buske
+  - name: Eisuke Dohi
     affiliation: 4
-  - name: Susumu Goto
-    affiliation: "1,3"
-  - name: Toyofumi Fujiwara
+  - name: Hiroyuki Mishima
+    affiliation: 5
+  - name: Atsuko Yamaguchi
     affiliation: 3
+  - name: Tzung-Chien Hsieh
+    affiliation: 6
+  - name: Orion Buske
+    affiliation: 7
+  - name: Susumu Goto
+    affiliation: "1,2"
+  - name: Toyofumi Fujiwara
+    affiliation: 2
 affiliations:
   - name: "Department of Computational Biology and Medical Sciences, Graduate School of Frontier Sciences, The University of Tokyo"
     index: 1
-  - name: "Information and Data Sciences, Graduate School of Information and Data Sciences, Tokyo City University"
-    index: 2
   - name: "Database Division for Life Science (DBCLS), BioData Science Initiative (BSI), National Institute of Genetics (NIG), Research Organization of Information and Systems (ROIS)"
+    index: 2
+  - name: "Information and Data Sciences, Graduate School of Information and Data Sciences, Tokyo City University"
     index: 3
-  - name: "PhenoTips, Toronto, Ontario, Canada"
-    index: 4
   - name: "National Institute of Neuroscience, National Center of Neurology and Psychiatry (NCNP)"
-    index: 5
+    index: 4
   - name: "Atomic Bomb Disease Institute, Nagasaki University"
-    index: 6
+    index: 5
   - name: "Institute for Genomic Statistics and Bioinformatics, University Hospital Bonn"
+    index: 6
+  - name: "PhenoTips, Toronto, Ontario, Canada"
     index: 7
 date: "18 September 2026"
 bibliography: paper.bib
@@ -63,9 +63,9 @@ Rare diseases are difficult to diagnose not only because each condition is uncom
 
 The relevant evidence is also distributed across different forms of patient information and biomedical knowledge. The Human Phenotype Ontology (HPO) provides a structured vocabulary for clinical abnormalities [@HPO2024]. PubCaseFinder uses HPO terms to retrieve phenotype-similar case reports and prioritize diseases [@PubCaseFinder2018], whereas GestaltMatcher searches for similar facial phenotypes [@GestaltMatcher2022]. These tools are useful precisely because they view the patient from different perspectives: a disease weakly ranked by one modality may be strongly suggested by another.
 
-Previous multimodal studies have already demonstrated the value of combining such information. PhenoScore combines facial analysis with HPO-based phenotypic similarity, GestaltMML integrates facial images with demographic and clinical information, PEDIA combines facial and clinical information with exome-based prioritization, and SHEPHERD uses phenotype-aware knowledge-graph representations for several rare-disease diagnostic tasks [@PhenoScore2023; @GestaltMML2026; @PEDIA2019; @SHEPHERD2025]. These studies establish that multimodal information can improve rare-disease analysis. They also motivate a complementary systems question: how should outputs from independently developed specialist tools be selected, combined and preserved when they do not share the same representation or score scale?
+Previous multimodal studies have already demonstrated the value of combining such information. PhenoScore combines facial analysis with HPO-based phenotypic similarity [@PhenoScore2023]. GestaltMML integrates facial images with demographic and clinical information [@GestaltMML2026]. PEDIA combines facial and clinical information with exome-based prioritization [@PEDIA2019]. SHEPHERD uses phenotype-aware knowledge-graph representations for several rare-disease diagnostic tasks [@SHEPHERD2025]. These studies establish that multimodal information can improve rare-disease analysis. They also motivate a complementary systems question: how should outputs from independently developed specialist tools be selected, combined and preserved when they do not share the same representation or score scale?
 
-Large language models (LLMs) provide a flexible integration layer for this problem. Recent systems such as DeepRare, RareAgents and MEDDxAgent use LLMs to coordinate retrieval, diagnostic reasoning or iterative differential diagnosis [@DeepRare2026; @RareAgents2026; @MEDDxAgent2025]. DeepRare is particularly relevant because it combines a broad set of specialist tools and medical knowledge sources and returns evidence-linked, traceable reasoning. Together, these studies show that broad tool orchestration and source-linked explanations are feasible, while leaving a practical design question for systems built from ranked specialist outputs: which candidates should be carried forward for detailed checking, and how should their identity and source remain attached through LLM-mediated integration?
+Large language models (LLMs) provide a flexible integration layer for this problem. Recent systems using LLM-based diagnostic workflows include DeepRare [@DeepRare2026], RareAgents [@RareAgents2026] and MEDDxAgent [@MEDDxAgent2025]. DeepRare is particularly relevant because it combines a broad set of specialist tools and medical knowledge sources and returns evidence-linked, traceable reasoning [@DeepRare2026]. Together, these studies show that broad tool orchestration and source-linked explanations are feasible, while leaving a practical design question for systems built from ranked specialist outputs: which candidates should be carried forward for detailed checking, and how should their identity and source remain attached through LLM-mediated integration?
 
 ZebraSeek focuses on this candidate-level problem. Clinical phenotypes, facial images and related information are first processed by specialist components that return ranked disease candidates. These candidate records are then integrated by an LLM, checked against external medical information and reduced to a final ranked differential. Facial evidence is introduced through GestaltMatcher rather than by asking the LLM to interpret a patient photograph directly. Candidate-level integration also makes it possible to retain which tool proposed a disease and, with the strengthened structured outputs introduced during the hackathon, to preserve candidate identifiers and source URLs through later stages. We therefore view ZebraSeek's intended value along three linked axes: effective use of complementary specialist candidates, traceability of where those candidates and supporting evidence came from, and efficient selection of what should be examined in depth.
 
@@ -175,7 +175,7 @@ ZebraSeek was designed around a practical problem in rare-disease diagnosis: use
 
 The original 74-case benchmark primarily supports the first of these goals. ZebraSeek achieved higher observed top-k recall than each individual component within that evaluation setting. More importantly, the case-level pattern explains how that gain arose: 11 diagnoses were recovered beyond PubCaseFinder's top-five coverage, whereas five diagnoses retrieved by PubCaseFinder were lost during integration. This shows both the value and the risk of candidate-level integration. Expanding the candidate pool can recover diagnoses missed by an individual tool, but the downstream ranking process can still discard useful source-specific candidates.
 
-Previous multimodal and agentic systems provide important foundations for this design. PhenoScore, GestaltMML and PEDIA show that facial, clinical and genomic information can be combined productively, while SHEPHERD uses a knowledge graph to support phenotype-driven diagnostic tasks [@PhenoScore2023; @GestaltMML2026; @PEDIA2019; @SHEPHERD2025]. DeepRare goes further by orchestrating multiple tools and heterogeneous medical knowledge sources and by returning reasoning linked to verifiable references [@DeepRare2026]. Against this background, ZebraSeek contributes a modular candidate-level workflow in which independently developed specialist tools remain identifiable through integration, and in which the size of the downstream candidate set can itself be treated as a design variable.
+Previous multimodal and agentic systems provide important foundations for this design. PhenoScore demonstrates integration of facial analysis with HPO-based phenotypic similarity [@PhenoScore2023]. GestaltMML integrates facial images with demographic and clinical information [@GestaltMML2026]. PEDIA combines facial and clinical information with exome-based prioritization [@PEDIA2019]. SHEPHERD uses a knowledge graph to support phenotype-driven diagnostic tasks [@SHEPHERD2025]. DeepRare goes further by orchestrating multiple tools and heterogeneous medical knowledge sources and by returning reasoning linked to verifiable references [@DeepRare2026]. Against this background, ZebraSeek contributes a modular candidate-level workflow in which independently developed specialist tools remain identifiable through integration, and in which the size of the downstream candidate set can itself be treated as a design variable.
 
 That design variable matters because the current ZebraSeek implementation uses a heuristic top-five cutoff for every component. This choice keeps the integration input small, but it creates an upper limit on what later reasoning can recover. A stronger LLM cannot select a disease that was never passed to it. At the opposite extreme, forwarding dozens of candidates from every tool increases the amount of evidence retrieval, comparison and LLM-based verification. The system is therefore affected both by the quality of LLM reasoning and by the upstream decision about which candidate diseases the LLM is allowed to consider.
 
@@ -191,7 +191,7 @@ Literature-derived cases additionally require careful consideration of informati
 
 The resulting research question is therefore not simply whether more modalities or a stronger LLM improve accuracy. It is how to acquire complementary specialist candidates deeply enough to avoid preventable candidate loss, select them narrowly enough to keep downstream reasoning practical, and preserve enough source information for the final differential to be independently reviewed. The current ZebraSeek implementation, original 74-case benchmark and BioHackathon candidate-depth analysis provide an initial framework for answering that question rather than a completed clinical validation.
 
-# Online Methods
+# Methods
 
 ## Study design and original case selection
 
