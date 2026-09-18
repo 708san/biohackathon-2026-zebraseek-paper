@@ -1,0 +1,10 @@
+method,coverage,mean_unique_candidates,n
+PCF@5,0.7338,5.00,462
+PCF@10,0.7814,10.00,462
+PCF@30,0.8355,30.00,462
+PCF@5 union GM@5,0.7749,9.66,462
+PCF@10 union GM@5,0.8160,14.58,462
+PCF@30 union GM@30,0.8896,57.57,462
+zeroshot-LLM(input-only),0.8438,19.28,461
+zeroshot-LLM(input+tool result),0.8460,18.18,461
+Ideal combinations,0.8896,2.66,462
