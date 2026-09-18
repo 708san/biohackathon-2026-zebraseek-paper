@@ -46,13 +46,12 @@ affiliations:
     index: 6
   - name: "Institute for Genomic Statistics and Bioinformatics, University Hospital Bonn"
     index: 7
-# Date of this working draft; confirm the submission date later.
 date: "18 September 2026"
 bibliography: paper.bib
-event: "TODO: Event identifier"
-biohackathon_name: "TODO: Event name"
-biohackathon_url: "https://example.org/TODO-event"
-biohackathon_location: "TODO: City, country, year"
+event: "BH26JP"
+biohackathon_name: "DBCLS BioHackathon 2026"
+biohackathon_url: "https://2026.biohackathon.org/"
+biohackathon_location: "Matsuyama, Japan, 2026"
 group: "ZebraSeek"
 git_url: "https://github.com/PubCaseFinder/biohackathon-2026-zebraseek-paper"
 authors_short: 'Naoya Yoshikuwa \emph{et al.}'
