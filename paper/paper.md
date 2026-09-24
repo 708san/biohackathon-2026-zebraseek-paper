@@ -15,7 +15,7 @@ authors:
     affiliation: 2
   - name: Teppei Okazaki
     affiliation: 3
-  - name: Jae-Moon Shin
+  - name: Jaemoon Shin
     affiliation: 2
   - name: Eisuke Dohi
     affiliation: 4
