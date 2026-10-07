@@ -33,7 +33,7 @@ The draft follows the [Nature Genetics Article structure](https://www.nature.com
 
 The current Results preserve the original ZebraSeek 74-case analysis and Figs. 1-6, then extend the study with the DBCLS BioHackathon 2026 candidate-acquisition analysis in Fig. 7 and Table 1. The generated PDF intentionally retains **BioHackrXiv typesetting and its bibliography style**. It is not a Nature Genetics production template.
 
-Event metadata are set to DBCLS BioHackathon 2026 (`BH26JP`), Matsuyama, Japan, 2026. The automated PDF's standard publication/submission labels do not mean that a submission has occurred.
+Event metadata are set to DBCLS BioHackathon 2026 (`BH26JP`), Matsuyama, Japan. The automated PDF's standard publication/submission labels do not mean that a submission has occurred.
 
 ## Reproduce the figures
 

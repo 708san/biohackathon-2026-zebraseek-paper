@@ -19,7 +19,7 @@
   - event: `BH26JP`
   - name: `DBCLS BioHackathon 2026`
   - URL: `https://2026.biohackathon.org/`
-  - location: `Matsuyama, Japan, 2026`
+  - location: `Matsuyama, Japan`
 - [x] ZebraSeek implementation repositoryをCode availabilityに追加
   - `https://github.com/708san/AI_AgentWithLangGraph`
 - [x] Table 1のunion記号がPDFで崩れる問題を修正
