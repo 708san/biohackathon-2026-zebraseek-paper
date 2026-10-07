@@ -46,7 +46,7 @@ affiliations:
     index: 6
   - name: "PhenoTips, Toronto, Ontario, Canada"
     index: 7
-date: "18 September 2026"
+date: "7 October 2026"
 bibliography:
   - paper.bib
   - eye2gene.bib
